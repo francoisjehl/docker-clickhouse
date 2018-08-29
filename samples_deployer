@@ -1,0 +1,16 @@
+#!/bin/bash
+
+printf "READY\n"
+while read line; do
+  >&2 echo "Creating TPCH tables on all nodes"
+  clickhouse-client --multiquery --query "$(cat /opt/tpch/ddl/create.sql)"
+  customers=$(clickhouse-client --query "select count(0) from default.customer") 
+  if [[ "$NODE_TYPE" == "master" && "$customers" == "0"  ]]
+  then
+    >&2 echo "Inserting dataset"
+    cat /opt/tpch/data/customer.tbl | sed 's/$/2000-01-01/' | clickhouse-client --query "INSERT INTO customer FORMAT CSV"
+    cat /opt/tpch/data/part.tbl | sed 's/$/2000-01-01/' | clickhouse-client --query "INSERT INTO part FORMAT CSV"
+    cat /opt/tpch/data/lineorder.tbl | clickhouse-client --query "INSERT INTO lineorderd FORMAT CSV"
+  fi
+  printf "RESULT 2\nOK"
+done < /dev/stdin

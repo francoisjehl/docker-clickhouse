@@ -1,0 +1,3 @@
+[submodule "tpch/ssb-dbgen"]
+	path = tpch/ssb-dbgen
+	url = git@github.com:vadimtk/ssb-dbgen.git

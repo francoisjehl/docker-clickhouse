@@ -1,0 +1,83 @@
+version: '2.0'
+services:
+  zookeeper:
+    image: zookeeper
+    restart: always
+    hostname: zookeeper
+    ports:
+      - 2181:2181
+
+  clickhouse01:
+    build:
+      context: .
+    hostname: clickhouse01
+    depends_on: 
+      - zookeeper
+    volumes:
+      - clickhouse01_data:/var/lib/clickhouse
+    expose:
+      - "9000"
+      - "8123"
+      - "9009"
+    environment:
+      NODE_TYPE: "master"
+      SHARD: 1
+
+  clickhouse02:
+    build:
+      context: .
+    hostname: clickhouse02
+    depends_on:
+      - zookeeper
+    volumes:
+      - clickhouse02_data:/var/lib/clickhouse
+    expose:
+      - "9000" 
+      - "8123"
+      - "9009"
+    environment:
+      NODE_TYPE: "slave"
+      SHARD: 1
+
+  clickhouse03:
+    build:
+      context: .
+    hostname: clickhouse03
+    depends_on:
+      - zookeeper
+    volumes:    
+      - clickhouse03_data:/var/lib/clickhouse
+    expose:
+      - "9000" 
+      - "8123"
+      - "9009"
+    environment:
+      NODE_TYPE: "slave"
+      SHARD: 2
+
+  clickhouse04:
+    build:
+      context: .
+    hostname: clickhouse04
+    depends_on:
+      - zookeeper
+    volumes:
+      - clickhouse04_data:/var/lib/clickhouse
+    expose:
+      - "9000"
+      - "8123"
+      - "9009"
+    environment:
+      NODE_TYPE: "slave"
+      SHARD: 2
+
+volumes:
+  clickhouse01_data:
+    driver: local
+  clickhouse02_data:
+    driver: local
+  clickhouse03_data:
+    driver: local
+  clickhouse04_data:
+    driver: local
+

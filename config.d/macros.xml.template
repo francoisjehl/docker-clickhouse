@@ -1,0 +1,8 @@
+<yandex>
+  <macros>
+    <cluster>docker</cluster>
+    <shard>${SHARD}</shard>
+    <replica>${HOSTNAME}</replica>
+  </macros>
+</yandex>
+

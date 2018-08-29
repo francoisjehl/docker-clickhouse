@@ -1,0 +1,7 @@
+#!/bin/bash
+
+echo "Pushing sharding configuration to config files (shard=${SHARD}, hostname=${HOSTNAME})"
+envsubst < /etc/clickhouse-server/config.d/macros.xml.template > /etc/clickhouse-server/config.d/macros.xml
+rm /etc/clickhouse-server/config.d/macros.xml.template
+echo "Starting Clickhouse"
+exec /usr/bin/clickhouse-server --config=${CLICKHOUSE_CONFIG}
